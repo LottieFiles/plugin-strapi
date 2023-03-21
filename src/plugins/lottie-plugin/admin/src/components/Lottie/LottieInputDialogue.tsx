@@ -9,14 +9,18 @@ import {
 } from '@strapi/design-system';
 import { Cog, Information, Landscape, Layer, Pencil, Play, Plus, Puzzle, ShoppingCart, Trash, Write } from "@strapi/icons";
 import { useIntl } from "react-intl";
+// @ts-ignore
+import { Link } from '@strapi/design-system/v2';
 import getTrad from "../../utils/getTrad";
 import LottieAnimation from "./LottieAnimation";
 // @ts-ignore
 import { Loader } from "@strapi/design-system/Loader";
-import { FeaturedQuery, PopularQuery, RecentQuery, SearchQuery } from "../../utils/queries";
-import { fetchQuery } from "../../utils/api";
+import { FeaturedQuery, PopularQuery, RecentQuery, SearchQuery, CreateLoginToken, TokenLogin } from "../../utils/queries";
+import { fetchQuery, fetchMutation } from "../../utils/api";
 import { useDebounce } from "use-debounce";
-
+import Banner from "../Banner";
+import { Player } from "@lottiefiles/react-lottie-player";
+import LottieLoading from "../Lottie-loading.json";
 
 const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
   const { formatMessage } = useIntl();
@@ -35,6 +39,62 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
   const [search, setSearch] = useState("");
   const [searchTerm, setSearchTerm] = useDebounce(search, 1000);
   const [params, setParams] = useState({ after, first, last })
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
+
+
+  const openUrl = (url: string) => {
+    const elem = document.createElement("a");
+    elem.setAttribute("href", url);
+    elem.setAttribute("target", "_blank");
+    elem.click();
+    elem.remove();
+  }
+
+  const login = async () => {
+    setIsLoggingIn(true)
+    // setAuth({});
+
+    fetchMutation(CreateLoginToken, { appKey: "strapi-plugin" }).then(async (result: any) => {
+      if (result.data.createLoginToken) {
+        openUrl(result.data.createLoginToken.loginUrl);
+        await pollLoginComplete(result.data.createLoginToken.token, new Date());
+      }
+
+    }).catch((err) => {
+      console.log("err", err)
+    })
+
+    // createLoginToken({ appKey: "figma-plugin" }).then(async (result) => {
+
+    // });
+  }
+
+  const pollLoginComplete = async (token, pollStartTime) => {
+    fetchMutation(TokenLogin, { token: token }).then(async (result: any) => {
+      if (!result.data) {
+        console.log("!result.data")
+        const currentTime = new Date();
+        if ((currentTime.getTime() - pollStartTime.getTime()) / 1000 / 60 < 10) {
+          console.log("< 60")
+
+          setTimeout(() => pollLoginComplete(token, pollStartTime), 2000);
+        } else {
+          console.log("> 60")
+
+          setIsLoggingIn(false);
+        }
+      } else {
+        console.log("result data")
+
+        let accessToken = result.data.tokenLogin.accessToken;
+        setAccessToken(accessToken);
+        setIsLoggingIn(false);
+
+      }
+    });
+  }
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -138,96 +198,130 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
           </defs>
         </svg>
       </ModalHeader>
-      <ModalBody style={{ minHeight: "600px", height: "100%", padding: "unset" }}>
+      {
+        accessToken ? <>
+          <ModalBody style={{ minHeight: "600px", height: "100%", padding: "unset" }}>
 
-        <Flex style={{}} >
-          <Box style={{}} >
-            <MainNav condensed={condensed} style={{ minHeight: "600px", height: "100%" }}>
-              <NavSections>
-                <Searchbar name="search" onClear={() => setSearch('')} value={search} onChange={(e: any) => {
-                  e.preventDefault()
-                  setSearch(e.target.value)
-                }} clearLabel="Clearing search" placeholder="search">
-                  Searching for a plugin
-                </Searchbar>
+            <Flex style={{}}>
+              <Box style={{}}>
+                <MainNav condensed={condensed} style={{ minHeight: "600px", height: "100%" }}>
+                  <NavSections>
+                    <Searchbar name="search" onClear={() => setSearch('')} value={search} onChange={(e: any) => {
+                      e.preventDefault();
+                      setSearch(e.target.value);
+                    }} clearLabel="Clearing search" placeholder="search">
+                      Searching for a plugin
+                    </Searchbar>
 
-                <Button fullWidth variant='tertiary'
-                  style={queryName === "recentPublicAnimations" ? { background: "#F6F8F9", } : {}}
-                  onClick={() => {
-                    setSearch("");
-                    setQuery(RecentQuery)
-                    setQueryName("recentPublicAnimations")
-                  }}>
-                  <span style={queryName === "recentPublicAnimations" ? { color: "#00C1A3" } : {}}>Recent</span>
-                </Button>
+                    <Button fullWidth variant='tertiary'
+                      style={queryName === "recentPublicAnimations" ? { background: "#F6F8F9", } : {}}
+                      onClick={() => {
+                        setSearch("");
+                        setQuery(RecentQuery);
+                        setQueryName("recentPublicAnimations");
+                      }}>
+                      <span style={queryName === "recentPublicAnimations" ? { color: "#00C1A3" } : {}}>Recent</span>
+                    </Button>
 
-                <Button fullWidth variant='tertiary'
-                  style={queryName === "featuredPublicAnimations" ? { background: "#F6F8F9", } : {}}
-                  onClick={() => {
-                    setSearch("");
-                    setQuery(FeaturedQuery)
-                    setQueryName("featuredPublicAnimations")
-                  }}>
-                  <span style={queryName === "featuredPublicAnimations" ? { color: "#00C1A3" } : {}}>Featured</span>
-                </Button>
+                    <Button fullWidth variant='tertiary'
+                      style={queryName === "featuredPublicAnimations" ? { background: "#F6F8F9", } : {}}
+                      onClick={() => {
+                        setSearch("");
+                        setQuery(FeaturedQuery);
+                        setQueryName("featuredPublicAnimations");
+                      }}>
+                      <span style={queryName === "featuredPublicAnimations" ? { color: "#00C1A3" } : {}}>Featured</span>
+                    </Button>
 
-                <Button fullWidth variant='tertiary'
-                  style={queryName === "popularPublicAnimations" ? { background: "#F6F8F9", } : {}}
-                  onClick={() => {
-                    setSearch("");
-                    setQuery(PopularQuery)
-                    setQueryName("popularPublicAnimations")
-                  }}>
-                  <span style={queryName === "popularPublicAnimations" ? { color: "#00C1A3" } : {}}>Popular</span>
+                    <Button fullWidth variant='tertiary'
+                      style={queryName === "popularPublicAnimations" ? { background: "#F6F8F9", } : {}}
+                      onClick={() => {
+                        setSearch("");
+                        setQuery(PopularQuery);
+                        setQueryName("popularPublicAnimations");
+                      }}>
+                      <span style={queryName === "popularPublicAnimations" ? { color: "#00C1A3" } : {}}>Popular</span>
 
-                </Button>
+                    </Button>
 
-              </NavSections>
-            </MainNav>
+                  </NavSections>
+                </MainNav>
 
-          </Box>
+              </Box>
 
-          <Box style={{ width: "100%", height: "600px", overflow: "auto" }} >
+              <Box style={{ width: "100%", height: "600px", overflow: "auto" }}>
 
-            {loading ? (
-              <Loader style={{ margin: "auto", textAlign: "center" }}>Loading content...</Loader>
-            ) : (
-              <Grid gap={2}>
-                {animations.map((animation: any) => {
-                  return (
-                    <LottieAnimation
-                      key={animation.node.id}
-                      animation={animation.node}
-                      setSelected={setSelected}
-                    />
-                  );
-                })}
-              </Grid>
-            )}
-          </Box>
-        </Flex>
+                {loading ? (
+                  <Loader style={{ margin: "auto", textAlign: "center" }}>Loading content...</Loader>
+                ) : (
+                  <Grid gap={2}>
+                    {animations.map((animation: any) => {
+                      return (
+                        <LottieAnimation
+                          key={animation.node.id}
+                          animation={animation.node}
+                          setSelected={setSelected} />
+                      );
+                    })}
+                  </Grid>
+                )}
+              </Box>
+            </Flex>
 
-      </ModalBody>
-
-      <ModalFooter
-        startActions={
-          <>
-            <Button onClick={() => setIsVisible((prev) => !prev)} variant="tertiary">Cancel</Button>
-            <Button onClick={() => {
-              handleSelect(selected);
-              setIsVisible((prev) => !prev)
+          </ModalBody><ModalFooter
+            startActions={
+              <>
+                <Button onClick={() => setIsVisible((prev) => !prev)} variant="tertiary">Cancel</Button>
+                <Button onClick={() => {
+                  handleSelect(selected);
+                  setIsVisible((prev) => !prev);
+                }}>Finish</Button>
+              </>
             }
-            }>Finish</Button>
-          </>
-        }
-        endActions={
+            endActions={
+              <>
+                <Button variant="secondary" onClick={() => { setParams({ after: "", before: pageInfo.startCursor, first: 0, last: 20 } as any); }}>Previous</Button>
+                <Button variant="secondary" onClick={() => { setParams({ after: pageInfo.endCursor, first: 20, before: "", last: 0 } as any); }}>Next</Button>
+
+              </>
+            } />
+        </> :
           <>
-            <Button variant="secondary" onClick={() => { setParams({ after: "", before: pageInfo.startCursor, first: 0, last: 20 } as any) }}>Previous</Button>
-            <Button variant="secondary" onClick={() => { setParams({ after: pageInfo.endCursor, first: 20, before: "", last: 0 } as any) }}>Next</Button>
+            {
+              isLoggingIn ?
+                <Box style={{ display: "block", paddingTop: "15%", textAlign: "center", minHeight: "600px", height: "100%", margin: "auto", }}>
+                  <Player
+                    src={JSON.stringify(LottieLoading)}
+                    autoplay={true}
+                    loop={true}
+                    style={{ height: "100px", width: "100px", }}
+                  />
+                </Box> : <>
+                  <Box style={{ display: "block", textAlign: "center", maxWidth: "512px", margin: "auto", }}>
+                    <Typography style={{ display: "block", }} variant="alpha">Bring your web pages to life with
+                      Lottie animations</Typography>
+
+                    <Typography style={{ display: "block", }} variant="beta">Log in with your LottieFiles account to access
+                      the world’s largest collection of free-to-use animations on your website.</Typography>
+
+                    <Button style={{ margin: "auto", }} onClick={() => login()}
+                      variant='default'>Log in with your LottieFiles account</Button>
+
+                    <Typography style={{ display: "block", }} variant="epsilon">Don’t have an account yet?</Typography>
+
+                    <Link isExternal href="https://strapi.io/">
+                      External link
+                    </Link>
+                  </Box>
+
+                  <Box style={{ display: "block", textAlign: "center", margin: "auto", marginTop: "50px" }}>
+                    <Banner />
+                  </Box>
+                </>
+            }
 
           </>
-        }
-      />
+      }
     </ModalLayout >
   )
 

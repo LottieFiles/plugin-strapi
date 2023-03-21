@@ -15,4 +15,15 @@ const fetchQuery = async (query: any, params) => {
   }
 };
 
-export { fetchQuery };
+const fetchMutation = async (query: any, params) => {
+  try {
+    const data = await client.mutation(query, params).toPromise()
+
+    return data;
+
+  } catch (error) {
+    return null;
+  }
+};
+
+export { fetchQuery, fetchMutation };
