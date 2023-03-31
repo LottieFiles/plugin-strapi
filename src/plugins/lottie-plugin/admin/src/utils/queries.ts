@@ -127,4 +127,16 @@ const TokenLogin = gql`
     }
   `
 
-export { FeaturedQuery, RecentQuery, PopularQuery, SearchQuery, CreateLoginToken, TokenLogin };
+ const Viewer = gql`
+    query viewer {
+      viewer {
+        id
+        name
+        email
+        avatarUrl
+        username
+      }
+    }
+  `
+
+export { FeaturedQuery, RecentQuery, PopularQuery, SearchQuery, CreateLoginToken, TokenLogin, Viewer };

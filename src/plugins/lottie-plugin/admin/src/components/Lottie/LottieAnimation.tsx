@@ -18,6 +18,21 @@ import {
   CardContent,
   // @ts-ignore
 } from "@strapi/design-system/Card";
+import { LottiePlayer } from "../Player/lottie-player";
+import styled from "styled-components";
+
+const AnimationContainer = styled.div`
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  height: 10.25rem;
+  width: 100%;
+  z-index: 1;
+`;
+
+const AnimationCheckbox = styled.div`
+  z-index: 2;
+`;
 
 const LottieAnimation = ({ animation, setSelected }) => {
   const [isChecked, setIsChecked] = useState(false);
@@ -36,19 +51,30 @@ const LottieAnimation = ({ animation, setSelected }) => {
     >
       <Card>
         <CardHeader>
-          <CardCheckbox
-            style={{ zIndex: 10 }}
-            onChange={(e) => {
-              setIsChecked(e.target.checked);
-              if (e.target.checked) {
-                handleOnChange(animation);
-              } else {
-                handleOnChange(null);
-              }
-            }}
-            value={isChecked}
-          />
-          <CardAsset src={animation.gifUrl} />
+          <AnimationCheckbox>
+            <CardCheckbox
+              style={{ zIndex: 10 }}
+              onChange={(e) => {
+                setIsChecked(e.target.checked);
+                if (e.target.checked) {
+                  handleOnChange(animation);
+                } else {
+                  handleOnChange(null);
+                }
+              }}
+              value={isChecked}
+            />
+          </AnimationCheckbox>
+
+          <AnimationContainer>
+            <LottiePlayer
+              bgColor={animation.bgColor}
+              src={animation.lottieUrl}
+              isPreview={true}
+              style={{ width: "100%" }}
+            />
+          </AnimationContainer>
+
         </CardHeader>
         <CardBody>
           <CardContent>
