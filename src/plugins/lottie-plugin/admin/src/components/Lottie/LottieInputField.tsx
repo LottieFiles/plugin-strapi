@@ -1,35 +1,27 @@
-import React, { useState, useRef, useEffect } from "react";
 import {
-  CarouselInput, CarouselSlide, CarouselImage, CarouselActions,
-  ModalHeader, ModalLayout,
-  BaseButton, IconButton, Box, Avatar, Typography, Stack
-} from '@strapi/design-system';
-import { Pencil, Play, Plus, Trash } from "@strapi/icons";
+  Avatar,
+  BaseButton,
+  Box,
+  CarouselActions,
+  CarouselInput,
+  CarouselSlide,
+  IconButton,
+  Stack,
+  Typography,
+} from "@strapi/design-system";
+import { Pencil, Trash } from "@strapi/icons";
+import React, { useState } from "react";
 import { useIntl } from "react-intl";
 import getTrad from "../../utils/getTrad";
 import LottieInputDialogue from "./LottieInputDialogue";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardCheckbox,
-  CardAsset,
-  CardContent,
-  // @ts-ignore
-} from "@strapi/design-system/Card";
 
-const LottieInput = ({
-  attribute,
-  description,
-  disabled,
-  error,
-  intlLabel,
-  labelAction,
-  name,
-  onChange,
-  required,
-  value,
-}) => {
+import "@dotlottie/player-component";
+import styled from "styled-components";
+import { LottieProvider } from "../../context/lottie-provider";
+
+const BrowseAnimation = styled.button``;
+
+const LottieInput = ({ attribute, name, onChange, value }) => {
   const { formatMessage } = useIntl();
   const [isVisible, setIsVisible] = useState(false);
 
@@ -37,7 +29,6 @@ const LottieInput = ({
     e.preventDefault();
     setIsVisible(!isVisible);
   };
-
 
   const handleSelect = async (e) => {
     onChange({
@@ -47,49 +38,92 @@ const LottieInput = ({
         type: attribute.type,
       },
     });
-  }
+    setIsVisible((prev) => !prev);
+  };
 
   return (
-    <CarouselInput label={formatMessage({ id: getTrad("color-picker.label") })}
-      selectedSlide={0} previousLabel="Previous slide"
+    <CarouselInput
+      label={formatMessage({ id: getTrad("color-picker.label") })}
+      data-testid="lottie-input"
+      selectedSlide={0}
+      previousLabel="Previous slide"
       nextLabel="Next slide"
-      onNext={() => { }}
-      onPrevious={() => { }}
+      onNext={() => {}}
+      onPrevious={() => {}}
       actions={
         <CarouselActions>
-          {value && <>
-            <IconButton onClick={handleToggle} label="Edit" icon={<Pencil />} />
-            <IconButton onClick={() => handleSelect(null)} label="Delete" icon={<Trash />} />
-          </>
-          }
-        </CarouselActions>}
+          {value && (
+            <>
+              <IconButton
+                id="edit-animation-field"
+                onClick={handleToggle}
+                label="Edit"
+                icon={<Pencil />}
+              />
+              <IconButton
+               id="delete-animation-field"
+                onClick={() => handleSelect(null)}
+                label="Delete"
+                icon={<Trash />}
+              />
+            </>
+          )}
+        </CarouselActions>
+      }
       style={{
-        width: '242px'
-      }}>
+        width: "90%",
+      }}
+    >
       <CarouselSlide label="1 of 1 slides">
         <>
-          {value ? <CardAsset src={JSON.parse(value).gifUrl} /> :
+          {value ? (
+            //@ts-ignore
+            <dotlottie-player
+              autoplay
+              loop
+              mode="normal"
+              src={value && JSON.parse(value).lottieUrl}
+              style={{ width: "100%" }}
+            />
+          ) : (
             <>
-              <Stack >
-                <Box style={{ margin: 'auto' }}>
-                  <BaseButton style={{ margin: 'auto' }} onClick={handleToggle}>
-                    <Avatar src="https://static10.lottiefiles.com/images/logo/icon.svg" style={{ display: 'block' }} alt="LottieFiles Logo" />
-                  </BaseButton>
+              <Stack>
+                <Box style={{ margin: "auto" }}>
+                  <BrowseAnimation
+                    data-testid="toggle-dialog-button"
+                    type="button"
+                    onClick={handleToggle}
+                  >
+                    <Avatar
+                      src="https://static10.lottiefiles.com/images/logo/icon.svg"
+                      style={{ display: "block" }}
+                      alt="LottieFiles Logo"
+                    />
+                  </BrowseAnimation>
                 </Box>
-                <Box><Typography textColor={value ? null : "neutral600"} variant="pi">Click to select</Typography></Box>
+                <Box>
+                  <Typography
+                    textColor={value ? null : "neutral600"}
+                    variant="pi"
+                  >
+                    Click to select
+                  </Typography>
+                </Box>
               </Stack>
-
             </>
-
-          }
+          )}
           {isVisible && (
-            <LottieInputDialogue setIsVisible={setIsVisible} handleSelect={handleSelect} />
-          )
-          }
+            <LottieProvider>
+              <LottieInputDialogue
+                setIsVisible={setIsVisible}
+                handleSelect={handleSelect}
+              />
+            </LottieProvider>
+          )}
         </>
       </CarouselSlide>
     </CarouselInput>
-  )
-}
+  );
+};
 
 export default LottieInput;

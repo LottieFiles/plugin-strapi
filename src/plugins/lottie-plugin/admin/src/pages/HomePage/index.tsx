@@ -4,8 +4,8 @@
  *
  */
 
-import React from 'react';
-import pluginId from '../../pluginId';
+import React from "react";
+import pluginId from "../../pluginId";
 // @ts-ignore
 import ColorPickerInput from "./components/LottieFiles/ColorPickerInput"
 

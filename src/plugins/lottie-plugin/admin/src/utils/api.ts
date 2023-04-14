@@ -1,18 +1,37 @@
-import { gql, createClient } from '@urql/core';
+import React, { useState, useEffect } from "react";
+import { gql, createClient, Client } from "@urql/core";
 
-const client = createClient({
-  url: 'https://graphql.lottiefiles.com/2022-08',
+const defaultClient = new Client({
+  url: "https://graphql.lottiefiles.com/2022-08",
 });
 
-const fetchQuery = async (query: any, params) => {
-  try {
-    const data = await client.query(query, params).toPromise()
+export const useUrqlClient = (url) => {
+  const [client, setClient] = useState<Client>(defaultClient);
 
-    return data;
+  useEffect(() => {
+    const newClient = new Client({ url });
+    setClient(newClient);
+  }, [url]);
 
-  } catch (error) {
-    return null;
-  }
+  const fetchQuery = async (query: any, params) => {
+    try {
+      const data = await client.query(query, params).toPromise();
+
+      return data;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const fetchMutation = async (query: any, params) => {
+    try {
+      const data = await client.mutation(query, params).toPromise();
+
+      return data;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  return { fetchQuery, fetchMutation };
 };
-
-export { fetchQuery };

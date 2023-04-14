@@ -110,4 +110,33 @@ const SearchQuery = gql`
   }
 `
 
-export { FeaturedQuery, RecentQuery, PopularQuery, SearchQuery };
+const CreateLoginToken = gql`
+    mutation ($appKey: String!) {
+      createLoginToken(appKey: $appKey) {
+        token
+        loginUrl
+      }
+    }
+  `
+
+const TokenLogin = gql`
+    mutation tokenLogin($token: String!) {
+      tokenLogin(token: $token) {
+        accessToken
+      }
+    }
+  `
+
+ const Viewer = gql`
+    query viewer {
+      viewer {
+        id
+        name
+        email
+        avatarUrl
+        username
+      }
+    }
+  `
+
+export { FeaturedQuery, RecentQuery, PopularQuery, SearchQuery, CreateLoginToken, TokenLogin, Viewer  };

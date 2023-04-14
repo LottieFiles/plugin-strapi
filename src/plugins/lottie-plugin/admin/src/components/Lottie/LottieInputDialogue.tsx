@@ -1,26 +1,66 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
+  Box,
   Button,
-  MainNav, NavSection, NavSections, NavCondense, NavBrand, NavUser, NavLink,
-  CarouselInput, CarouselSlide, CarouselImage, CarouselActions,
-  ModalHeader, ModalLayout, ModalBody, Grid, GridItem, Divider, Flex,
-  Searchbar, SearchForm, TwoColsLayout, ModalFooter,
-  BaseButton, IconButton, Box, Avatar, Typography, Stack, NavFooter
-} from '@strapi/design-system';
-import { Cog, Information, Landscape, Layer, Pencil, Play, Plus, Puzzle, ShoppingCart, Trash, Write } from "@strapi/icons";
+  Flex,
+  Grid,
+  MainNav,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalLayout,
+  NavSections,
+  Searchbar,
+  Typography,
+  Loader,
+  Link,
+} from "@strapi/design-system";
 import { useIntl } from "react-intl";
-import getTrad from "../../utils/getTrad";
+// @ts-ignore
 import LottieAnimation from "./LottieAnimation";
 // @ts-ignore
-import { Loader } from "@strapi/design-system/Loader";
-import { FeaturedQuery, PopularQuery, RecentQuery, SearchQuery } from "../../utils/queries";
-import { fetchQuery } from "../../utils/api";
+import { Player } from "@lottiefiles/react-lottie-player";
+import styled from "styled-components";
 import { useDebounce } from "use-debounce";
+import { LottieContext, LottieProvider } from "../../context/lottie-provider";
+import {
+  FeaturedQuery,
+  PopularQuery,
+  RecentQuery,
+  SearchQuery,
+} from "../../utils/queries";
+import Banner from "../Banner";
+import LottieLoading from "../Lottie-loading.json";
+import { LoginAuto } from "../login-auto/LoginAuto";
 
+const BigModal = styled(ModalLayout)`
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  width: 90%;
+  height: 90%;
+`;
+
+const LoginButton = styled(Button)`
+  borderradius: 0.5rem;
+  display: inline-block !important;
+  cursor: pointer;
+  transitionproperty: all;
+  transitionduration: 0.25s;
+  padding-left: 2.25rem !important;
+  padding-right: 2.25rem !important;
+  height: 3.5rem !important;
+  background: #00c1a2;
+  border-radius: 12px;
+  border: none;
+  :hover {
+    background: #029d91;
+  }
+`;
 
 const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
   const { formatMessage } = useIntl();
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
   const [condensed, setCondensed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [animations, setAnimations] = useState([]);
@@ -34,38 +74,56 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
   const [last, setLast] = useState(0);
   const [search, setSearch] = useState("");
   const [searchTerm, setSearchTerm] = useDebounce(search, 1000);
-  const [params, setParams] = useState({ after, first, last })
+  const [params, setParams] = useState({ after, first, last });
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
+
+  const { fetchQuery, appData } = useContext(LottieContext);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      let queryResponse;
-      if (searchTerm) {
-        if (search !== "") {
-          setQuery(SearchQuery);
-          setQueryName("searchPublicAnimations");
-          queryResponse = await fetchQuery(query, { ...params, query: search });
+    if (
+      (appData?.accessToken !== "" && appData.accessToken !== null) ||
+      accessToken
+    ) {
+      const fetchData = async () => {
+        setLoading(true);
+        let queryResponse;
+        if (searchTerm) {
+          if (search !== "") {
+            setQuery(SearchQuery);
+            setQueryName("searchPublicAnimations");
+            queryResponse = await fetchQuery(query, {
+              ...params,
+              query: search,
+            });
+          }
+        } else {
+          queryResponse = await fetchQuery(query, params);
         }
-      } else {
-        queryResponse = await fetchQuery(query, params);
-      }
 
-      if (queryResponse?.data && queryResponse?.data[queryName].edges) {
-        setAnimations(queryResponse.data[queryName].edges);
-        setPageInfo(queryResponse.data[queryName].pageInfo)
-      }
-      setLoading(false);
+        if (queryResponse?.data && queryResponse?.data[queryName].edges) {
+          setAnimations(queryResponse.data[queryName].edges);
+          setPageInfo(queryResponse.data[queryName].pageInfo);
+        }
+        setLoading(false);
+
+      };
+      fetchData();
     }
-    fetchData();
   }, [queryName, searchTerm, params]);
 
   return (
-    <ModalLayout
-      style={{ minWidth: "1200px", width: "auto" }}
+    <BigModal
+      data-testid="lottie-animation-big-modal"
       onClose={() => setIsVisible(false)}
       labelledBy="title"
     >
-      <ModalHeader>
+      <ModalHeader
+        className="AwsomeModal"
+        style={{
+          background: "white !important",
+        }}
+      >
         <svg
           className="lf-ml-1.5"
           width="185"
@@ -138,99 +196,321 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
           </defs>
         </svg>
       </ModalHeader>
-      <ModalBody style={{ minHeight: "600px", height: "100%", padding: "unset" }}>
+      {(appData?.accessToken !== "" && appData.accessToken !== null) ||
+      accessToken ? (
+        <>
+          <ModalBody
+            style={{
+              maxHeight: "calc(100% - 130px)",
+              height: "100%",
+              padding: "unset",
+            }}
+          >
+            <Flex
+              style={{
+                height: "100%",
+              }}
+            >
+              <Box
+                style={{
+                  height: "100%",
+                }}
+              >
+                <MainNav
+                  condensed={condensed}
+                  style={{ minHeight: "100%", height: "100%" }}
+                >
+                  <NavSections>
+                    <Searchbar
+                      name="search"
+                      onClear={() => setSearch("")}
+                      value={search}
+                      onChange={(e: any) => {
+                        e.preventDefault();
+                        setSearch(e.target.value);
+                      }}
+                      clearLabel="Clearing search"
+                      placeholder="search"
+                    >
+                      Searching for a plugin
+                    </Searchbar>
 
-        <Flex style={{}} >
-          <Box style={{}} >
-            <MainNav condensed={condensed} style={{ minHeight: "600px", height: "100%" }}>
-              <NavSections>
-                <Searchbar name="search" onClear={() => setSearch('')} value={search} onChange={(e: any) => {
-                  e.preventDefault()
-                  setSearch(e.target.value)
-                }} clearLabel="Clearing search" placeholder="search">
-                  Searching for a plugin
-                </Searchbar>
+                    <Button
+                      fullWidth
+                      variant="tertiary"
+                      style={
+                        queryName === "recentPublicAnimations"
+                          ? { background: "#F6F8F9" }
+                          : {}
+                      }
+                      onClick={() => {
+                        setSearch("");
+                        setQuery(RecentQuery);
+                        setQueryName("recentPublicAnimations");
+                      }}
+                    >
+                      <span
+                        style={
+                          queryName === "recentPublicAnimations"
+                            ? { color: "#00C1A3" }
+                            : {}
+                        }
+                      >
+                        Recent
+                      </span>
+                    </Button>
 
-                <Button fullWidth variant='tertiary'
-                  style={queryName === "recentPublicAnimations" ? { background: "#F6F8F9", } : {}}
-                  onClick={() => {
-                    setSearch("");
-                    setQuery(RecentQuery)
-                    setQueryName("recentPublicAnimations")
-                  }}>
-                  <span style={queryName === "recentPublicAnimations" ? { color: "#00C1A3" } : {}}>Recent</span>
+                    <Button
+                      fullWidth
+                      variant="tertiary"
+                      style={
+                        queryName === "featuredPublicAnimations"
+                          ? { background: "#F6F8F9" }
+                          : {}
+                      }
+                      onClick={() => {
+                        setSearch("");
+                        setQuery(FeaturedQuery);
+                        setQueryName("featuredPublicAnimations");
+                      }}
+                    >
+                      <span
+                        style={
+                          queryName === "featuredPublicAnimations"
+                            ? { color: "#00C1A3" }
+                            : {}
+                        }
+                      >
+                        Featured
+                      </span>
+                    </Button>
+
+                    <Button
+                      fullWidth
+                      variant="tertiary"
+                      style={
+                        queryName === "popularPublicAnimations"
+                          ? { background: "#F6F8F9" }
+                          : {}
+                      }
+                      onClick={() => {
+                        setSearch("");
+                        setQuery(PopularQuery);
+                        setQueryName("popularPublicAnimations");
+                      }}
+                    >
+                      <span
+                        style={
+                          queryName === "popularPublicAnimations"
+                            ? { color: "#00C1A3" }
+                            : {}
+                        }
+                      >
+                        Popular
+                      </span>
+                    </Button>
+                  </NavSections>
+                </MainNav>
+              </Box>
+
+              <Box
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  overflow: "auto",
+                }}
+              >
+                {loading ? (
+                  <Loader style={{ margin: "auto", textAlign: "center" }}>
+                    Loading content...
+                  </Loader>
+                ) : (
+                  <Grid
+                    gap={2}
+                    data-testid="animation-grid"
+                    style={{ "grid-template-columns": "repeat(15, 1fr)" }}
+                  >
+                    {animations.map((animation: any) => {
+                      return (
+                        <LottieAnimation
+                          key={animation.node.id}
+                          animation={animation.node}
+                          setSelected={setSelected}
+                        />
+                      );
+                    })}
+                  </Grid>
+                )}
+              </Box>
+            </Flex>
+          </ModalBody>
+          <ModalFooter
+            data-testid="animation-modal-footer"
+            startActions={
+              <>
+                <Button
+                  onClick={() => setIsVisible((prev) => !prev)}
+                  variant="tertiary"
+                >
+                  Cancel
                 </Button>
-
-                <Button fullWidth variant='tertiary'
-                  style={queryName === "featuredPublicAnimations" ? { background: "#F6F8F9", } : {}}
+                <Button
                   onClick={() => {
-                    setSearch("");
-                    setQuery(FeaturedQuery)
-                    setQueryName("featuredPublicAnimations")
-                  }}>
-                  <span style={queryName === "featuredPublicAnimations" ? { color: "#00C1A3" } : {}}>Featured</span>
+                    handleSelect(selected);
+                  }}
+                >
+                  Finish
                 </Button>
-
-                <Button fullWidth variant='tertiary'
-                  style={queryName === "popularPublicAnimations" ? { background: "#F6F8F9", } : {}}
-                  onClick={() => {
-                    setSearch("");
-                    setQuery(PopularQuery)
-                    setQueryName("popularPublicAnimations")
-                  }}>
-                  <span style={queryName === "popularPublicAnimations" ? { color: "#00C1A3" } : {}}>Popular</span>
-
-                </Button>
-
-              </NavSections>
-            </MainNav>
-
-          </Box>
-
-          <Box style={{ width: "100%", height: "600px", overflow: "auto" }} >
-
-            {loading ? (
-              <Loader style={{ margin: "auto", textAlign: "center" }}>Loading content...</Loader>
-            ) : (
-              <Grid gap={2}>
-                {animations.map((animation: any) => {
-                  return (
-                    <LottieAnimation
-                      key={animation.node.id}
-                      animation={animation.node}
-                      setSelected={setSelected}
-                    />
-                  );
-                })}
-              </Grid>
-            )}
-          </Box>
-        </Flex>
-
-      </ModalBody>
-
-      <ModalFooter
-        startActions={
-          <>
-            <Button onClick={() => setIsVisible((prev) => !prev)} variant="tertiary">Cancel</Button>
-            <Button onClick={() => {
-              handleSelect(selected);
-              setIsVisible((prev) => !prev)
+              </>
             }
-            }>Finish</Button>
-          </>
-        }
-        endActions={
-          <>
-            <Button variant="secondary" onClick={() => { setParams({ after: "", before: pageInfo.startCursor, first: 0, last: 20 } as any) }}>Previous</Button>
-            <Button variant="secondary" onClick={() => { setParams({ after: pageInfo.endCursor, first: 20, before: "", last: 0 } as any) }}>Next</Button>
+            endActions={
+              <>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setParams({
+                      after: "",
+                      before: pageInfo.startCursor,
+                      first: 0,
+                      last: 20,
+                    } as any);
+                  }}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setParams({
+                      after: pageInfo.endCursor,
+                      first: 20,
+                      before: "",
+                      last: 0,
+                    } as any);
+                  }}
+                >
+                  Next
+                </Button>
+              </>
+            }
+          />
+        </>
+      ) : (
+        <>
+          {isLoggingIn ? (
+            <Box
+              style={{
+                display: "block",
+                paddingTop: "15%",
+                textAlign: "center",
+                minHeight: "600px",
+                height: "100%",
+                margin: "auto",
+              }}
+            >
+              <Player
+                src={JSON.stringify(LottieLoading)}
+                autoplay={true}
+                loop={true}
+                style={{ height: "100px", width: "100px" }}
+              />
+            </Box>
+          ) : (
+            <ModalBody
+              style={{
+                maxHeight: "calc(100% - 65px)",
+                padding: 0,
+                paddingTop: "5rem",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                height: " 100%",
+                justifyContent: "space-between",
+              }}
+            >
+              <Box
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "center",
+                  marginTop: "5rem !important",
+                  width: "32rem",
+                }}
+              >
+                <Typography
+                  style={{
+                    fontWeight: "700",
+                    fontSize: "28px",
+                    lineHeight: "130%",
+                    textAlign: "center",
+                    color: "#20272C",
+                    marginBottom: "1rem",
+                  }}
+                  variant="alpha"
+                >
+                  Bring your web pages to life with Lottie animations
+                </Typography>
 
-          </>
-        }
-      />
-    </ModalLayout >
-  )
+                <Typography
+                  style={{
+                    fontWeight: 300,
+                    fontSize: "1.125rem",
+                    lineHeight: "1.75rem",
+                    marginBottom: "1.5rem",
+                  }}
+                  variant="beta"
+                >
+                  Log in with your LottieFiles account to access the world’s
+                  largest collection of free-to-use animations on your website.
+                </Typography>
 
-}
+                <LoginAuto
+                  label="Log Auto in with your LottieFiles account"
+                  onClick={() => {
+                    setLoading(true);
+                  }}
+                  onSuccess={(data: any) => setAccessToken(data)}
+                  onError={() => {}}
+                />
 
-export default LottieInputDialogue
+                <Typography
+                  style={{
+                    display: "block",
+                    fontSize: "13px",
+                    lineHeight: "1.5",
+                    marginTop: "1.5rem",
+                  }}
+                  variant="epsilon"
+                >
+                  Don’t have an account yet?
+                </Typography>
+
+                <Link
+                  isExternal
+                  href="https://lottiefiles.com/external-register/?via=strapi-plugin"
+                  style={{
+                    margin: "0 auto",
+                  }}
+                >
+                  Get started for free
+                </Link>
+              </Box>
+
+              <Box
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  margin: "auto",
+                }}
+              >
+                <Banner />
+              </Box>
+            </ModalBody>
+          )}
+        </>
+      )}
+    </BigModal>
+  );
+};
+
+export default LottieInputDialogue;
