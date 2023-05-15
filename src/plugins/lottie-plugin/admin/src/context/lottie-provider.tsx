@@ -41,18 +41,16 @@ export const LottieProvider: React.FC<ILottieProviderProps> = ({
   const [appData, setAppData] = useState<IHNResponseProps>({
     accessToken: "",
   });
-  const [isAppLoading, setIsAppLoading] = useState<IHNResponseProps | boolean>(
+  const [isAppLoading, setIsAppLoading] = useState<boolean>(
     false
   );
 
   useEffect(() => {
-    setIsAppLoading(() => true);
     const fetchStoreData = async () => {
       if(appData.accessToken === "") {
       const storage = new LocalStorage();
       const accessToken = await storage.getItem(localStore.lottieAccessToken);
 
- 
         setAppData((prev) => ({
           ...prev,
           accessToken,

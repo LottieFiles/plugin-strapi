@@ -3,10 +3,6 @@
  */
 
 
-import {
-  IPlayerProps as IDLPlayerProps
-} from "@lottiefiles/dotlottie-react-player";
-import { IPlayerProps } from "@lottiefiles/react-lottie-player";
 import React, { useEffect, useState } from "react";
 
 import { isDotLottieString } from "./is-dotlottie";
@@ -16,12 +12,14 @@ import { isDotLottieString } from "./is-dotlottie";
 import "@dotlottie/player-component";
 import "@lottiefiles/lottie-player";
 
-type PlayerProps = IPlayerProps | IDLPlayerProps;
-interface ILottiePlayerProps extends Omit<PlayerProps, "autoplay"> {
+interface ILottiePlayerProps {
   autoplay?: boolean;
+  loop?: boolean;
   bgColor?: string;
   isPreview?: boolean;
   isSimple?: boolean;
+  src?: string;
+  style?: React.CSSProperties;
   setBackground?: (value: string) => void;
 }
 

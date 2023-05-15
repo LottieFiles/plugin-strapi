@@ -100,7 +100,6 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
         } else {
           queryResponse = await fetchQuery(query, params);
         }
-
         if (queryResponse?.data && queryResponse?.data[queryName].edges) {
           setAnimations(queryResponse.data[queryName].edges);
           setPageInfo(queryResponse.data[queryName].pageInfo);
@@ -110,7 +109,7 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
       };
       fetchData();
     }
-  }, [queryName, searchTerm, params]);
+  }, [queryName, searchTerm, params, appData]);
 
   return (
     <BigModal
