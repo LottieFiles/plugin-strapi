@@ -32,6 +32,7 @@ jobs:
         with:
           commit: "chore: bump version"
           publish: yarn release
+          cwd: ./src/plugins/lottie-plugin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPMJS_TOKEN }}
