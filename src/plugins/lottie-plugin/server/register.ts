@@ -1,10 +1,8 @@
-import { Strapi } from '@strapi/strapi';
-
-export default ({ strapi }: { strapi: Strapi }) => {
+export default ({ strapi }) => {
   // registeration phase
   strapi.customFields.register({
-    name: 'lottie',
-    plugin: 'lottie-plugin',
-    type: 'string',
+    name: "lottie",
+    plugin: "lottie-plugin",
+    type: "string",
   });
 };

@@ -1,10 +1,8 @@
-import { Strapi } from '@strapi/strapi';
-
-export default ({ strapi }: { strapi: Strapi }) => ({
+export default ({ strapi }) => ({
   index(ctx) {
     ctx.body = strapi
-      .plugin('lottie-plugin')
-      .service('myService')
+      .plugin("lottie-plugin")
+      .service("myService")
       .getWelcomeMessage();
   },
 });
