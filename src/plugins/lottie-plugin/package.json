@@ -1,11 +1,12 @@
 {
   "name": "plugin-strapi",
   "version": "0.0.0",
-  "description": "This is the description of the plugin.",
+  "description": "LottieFiles Strapi plugin",
   "strapi": {
-    "name": "lottie-plugin",
-    "description": "Description of lottie-plugin plugin",
-    "kind": "plugin"
+    "name": "lottiefiles-for-strapi",
+    "description": "This plugin provide free and an easy way to add Lottie animations to your Strapi app",
+    "kind": "plugin",
+    "displayName": "LottieFiles for Strapi"
   },
   "dependencies": {
     "@dotlottie/player-component": "1.3.2",
