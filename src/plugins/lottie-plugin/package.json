@@ -1,6 +1,6 @@
 {
   "name": "plugin-strapi",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "LottieFiles Strapi plugin",
   "strapi": {
     "name": "lottiefiles-for-strapi",
