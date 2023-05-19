@@ -2,6 +2,10 @@
   "name": "strapi-plugin-lottie",
   "version": "0.0.1",
   "description": "LottieFiles Strapi plugin",
+  "author": {
+    "name": "Mushfau Saeed",
+    "email": "mushfau@lottiefiles.com"
+  },
   "strapi": {
     "name": "lottiefiles-for-strapi",
     "description": "This plugin provide free and an easy way to add Lottie animations to your Strapi app",
