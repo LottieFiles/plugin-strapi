@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "lib": ["ES2020"],
+    "target": "ES2019",
+
+    "strict": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "incremental": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "noEmitOnError": true,
+
+    "outDir": "dist",
+    "rootDir": "."
+  },
+
+  "include": [
+    // Include the root directory
+    "server",
+    // Force the JSON files in the src folder to be included
+    "server/**/*.json"
+  ],
+
+  "exclude": [
+    "node_modules/",
+    "dist/",
+
+    // Do not include admin files in the server compilation
+    "admin/",
+    // Do not include test files
+    "**/*.test.ts"
+  ]
+}

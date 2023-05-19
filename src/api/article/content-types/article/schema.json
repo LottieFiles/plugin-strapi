@@ -17,7 +17,7 @@
     },
     "icon": {
       "type": "customField",
-      "customField": "plugin::lottie-plugin.lottie"
+      "customField": "plugin::strapi-plugin-lottie.lottie"
     }
   }
 }

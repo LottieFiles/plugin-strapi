@@ -1,0 +1,1 @@
+export { LoginAuto as default } from './LoginAuto'

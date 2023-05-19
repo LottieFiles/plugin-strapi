@@ -2,6 +2,9 @@ name: Release
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   release:
@@ -9,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/plugins/lottie-plugin
+        working-directory: ./src/plugins/strapi-plugin-lottie
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -32,6 +35,7 @@ jobs:
         with:
           commit: "chore: bump version"
           publish: yarn release
+          cwd: ./src/plugins/strapi-plugin-lottie
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPMJS_TOKEN }}
