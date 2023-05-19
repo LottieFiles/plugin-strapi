@@ -1,6 +1,6 @@
 export default {
-  'lottie-plugin': {
+  "strapi-plugin-lottie": {
     enabled: true,
-    resolve: './src/plugins/lottie-plugin'
+    resolve: "./src/plugins/strapi-plugin-lottie",
   },
-}
+};

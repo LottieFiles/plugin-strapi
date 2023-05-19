@@ -1,7 +1,7 @@
 export default ({ strapi }) => ({
   index(ctx) {
     ctx.body = strapi
-      .plugin("lottie-plugin")
+      .plugin("strapi-plugin-lottie")
       .service("myService")
       .getWelcomeMessage();
   },

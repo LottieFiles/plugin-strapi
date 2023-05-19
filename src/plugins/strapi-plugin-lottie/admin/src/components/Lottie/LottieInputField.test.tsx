@@ -1,9 +1,5 @@
 /** @jest-environment jsdom */
-import {
-  screen,
-  fireEvent,
-  waitFor,
-} from "@testing-library/react";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 import React from "react";
 import LottieInput from "./LottieInputField";
@@ -45,7 +41,7 @@ describe("LottieInputField", () => {
         attribute={{
           type: "test",
         }}
-        name="lottie-plugin"
+        name="strapi-plugin-lottie"
         onChange={(val) => {
           console.log(val);
         }}
@@ -72,7 +68,7 @@ describe("LottieInputField", () => {
         attribute={{
           type: "test",
         }}
-        name="lottie-plugin"
+        name="strapi-plugin-lottie"
         onChange={(val) => {}}
         value={JSON.stringify({
           lottieUrl:
@@ -104,9 +100,7 @@ describe("LottieInputField", () => {
         // const toggleDialogButton = await screen.getByTestId(
         //   "toggle-dialog-button"
         // );
-        
-       // console.log("----toggleDialogButton", container.outerHTML.match("dotlottie-player")?.length);
-
+        // console.log("----toggleDialogButton", container.outerHTML.match("dotlottie-player")?.length);
         //expect(container.outerHTML.match("dotlottie-player")?.length).toBe(1);
       });
     });

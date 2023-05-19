@@ -1,10 +1,13 @@
 import React from "react";
 // @ts-ignore
-import { Avatar, } from "@strapi/design-system/Avatar";
+import { Avatar } from "@strapi/design-system/Avatar";
 const addColumnToTableHook = ({ displayedHeaders, layout }) => {
-
   displayedHeaders = displayedHeaders.map((displayedHeader) => {
-    if (displayedHeader.fieldSchema.customField && displayedHeader.fieldSchema.customField === 'plugin::lottie-plugin.lottie') {
+    if (
+      displayedHeader.fieldSchema.customField &&
+      displayedHeader.fieldSchema.customField ===
+        "plugin::strapi-plugin-lottie.lottie"
+    ) {
       return {
         ...displayedHeader,
         key: displayedHeader.key,
@@ -19,11 +22,11 @@ const addColumnToTableHook = ({ displayedHeaders, layout }) => {
             />
           );
         },
-      }
+      };
     } else {
-      return displayedHeader
+      return displayedHeader;
     }
-  })
+  });
   return {
     displayedHeaders: [...displayedHeaders],
     layout,

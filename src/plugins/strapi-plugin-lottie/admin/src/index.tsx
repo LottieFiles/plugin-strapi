@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 // @ts-ignore
-import { prefixPluginTranslations } from '@strapi/helper-plugin';
-import pluginPkg from '../../package.json';
-import pluginId from './pluginId';
-import Initializer from './components/Initializer';
-import PluginIcon from './components/PluginIcon';
+import { prefixPluginTranslations } from "@strapi/helper-plugin";
+import pluginPkg from "../../package.json";
+import pluginId from "./pluginId";
+import Initializer from "./components/Initializer";
+import PluginIcon from "./components/PluginIcon";
 import injectColumnInTable from "./extensions/InjectColumnInTable";
 
 const name = pluginPkg.strapi.name;
@@ -19,7 +19,9 @@ export default {
         defaultMessage: name,
       },
       Component: async () => {
-        const component = await import(/* webpackChunkName: "[request]" */ './pages/App');
+        const component = await import(
+          /* webpackChunkName: "[request]" */ "./pages/App"
+        );
 
         return component;
       },
@@ -43,7 +45,7 @@ export default {
     /*******lottie start  ******/
     app.customFields.register({
       name: "lottie",
-      pluginId: "lottie-plugin", // the custom field is created by a color-picker plugin
+      pluginId: "strapi-plugin-lottie", // the custom field is created by a color-picker plugin
       type: "json",
       intlLabel: {
         id: "color-picker.color.label",
@@ -56,7 +58,7 @@ export default {
       components: {
         Input: async () =>
           import(
-                /* webpackChunkName: "input-component" */ "./components/Lottie/LottieInputField"
+            /* webpackChunkName: "input-component" */ "./components/Lottie/LottieInputField"
           ),
       },
       options: {
@@ -76,7 +78,7 @@ export default {
     const { locales } = app;
 
     const importedTrads = await Promise.all(
-      locales.map(locale => {
+      locales.map((locale) => {
         return import(`./translations/${locale}.json`)
           .then(({ default: data }) => {
             return {
