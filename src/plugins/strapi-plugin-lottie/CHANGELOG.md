@@ -1,5 +1,11 @@
 # plugin-strapi
 
+## 0.0.3
+
+### Patch Changes
+
+- 43d0565: update package.json strapi section
+
 ## 0.0.2
 
 ### Patch Changes
