@@ -4,6 +4,8 @@ import {
   Button,
   Flex,
   Grid,
+  SubNav,
+  SuvNavLink,
   MainNav,
   ModalBody,
   ModalFooter,
@@ -14,7 +16,13 @@ import {
   Typography,
   Loader,
   Link,
+  Pagination,
+  PreviousLink, PageLink, NextLink
 } from "@strapi/design-system";
+
+import LottiePagination from "./LottiePagination";
+import LottieUser from "./LottieUser";
+import { NavLink } from 'react-router-dom';
 import { useIntl } from "react-intl";
 // @ts-ignore
 import LottieAnimation from "./LottieAnimation";
@@ -58,6 +66,16 @@ const LoginButton = styled(Button)`
   }
 `;
 
+const MenuButton = styled.button<{ active: boolean }>`
+  background-color: ${props => props.active ? '#F0F0FF' : 'transparent'};
+  color: ${props => props.active ? '#271FE0' : '#32324D'};
+  width: 100%;
+  text-align: left;
+  padding: 10px 0 10px 24px;
+  font-weight: ${props => props.active ? '500' : '400'};
+  font-size: 14px;
+`;
+
 const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
   const { formatMessage } = useIntl();
   const [value, setValue] = useState("");
@@ -70,8 +88,9 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
   const [queryName, setQueryName] = useState("recentPublicAnimations");
   const [after, setAfter] = useState("");
   const [befor, setBefor] = useState("");
-  const [first, setFirst] = useState(20);
+  const [first, setFirst] = useState(12);
   const [last, setLast] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [search, setSearch] = useState("");
   const [searchTerm, setSearchTerm] = useDebounce(search, 1000);
   const [params, setParams] = useState({ after, first, last });
@@ -103,6 +122,7 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
         if (queryResponse?.data && queryResponse?.data[queryName].edges) {
           setAnimations(queryResponse.data[queryName].edges);
           setPageInfo(queryResponse.data[queryName].pageInfo);
+          setTotalCount(queryResponse.data[queryName].totalCount);
         }
         setLoading(false);
 
@@ -127,7 +147,7 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
           className="lf-ml-1.5"
           width="185"
           height="30"
-          viewBox="0 0 185 36"
+          viewBox="0 0 255 36"
           fill="none"
         >
           <g clipPath="url(#clip0_3_59086)">
@@ -196,7 +216,7 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
         </svg>
       </ModalHeader>
       {(appData?.accessToken !== "" && appData.accessToken !== null) ||
-      accessToken ? (
+        accessToken ? (
         <>
           <ModalBody
             style={{
@@ -215,11 +235,11 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
                   height: "100%",
                 }}
               >
-                <MainNav
+                <SubNav
                   condensed={condensed}
                   style={{ minHeight: "100%", height: "100%" }}
                 >
-                  <NavSections>
+                  <Box style={{ padding: '1rem' }}>
                     <Searchbar
                       name="search"
                       onClear={() => setSearch("")}
@@ -233,83 +253,44 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
                     >
                       Searching for a plugin
                     </Searchbar>
-
-                    <Button
-                      fullWidth
-                      variant="tertiary"
-                      style={
-                        queryName === "recentPublicAnimations"
-                          ? { background: "#F6F8F9" }
-                          : {}
-                      }
+                  </Box>
+                  <Box style={{ marginTop: '1rem' }}>
+                    <MenuButton
+                      active={queryName === "recentPublicAnimations"}
                       onClick={() => {
                         setSearch("");
                         setQuery(RecentQuery);
                         setQueryName("recentPublicAnimations");
                       }}
                     >
-                      <span
-                        style={
-                          queryName === "recentPublicAnimations"
-                            ? { color: "#00C1A3" }
-                            : {}
-                        }
-                      >
-                        Recent
-                      </span>
-                    </Button>
+                      &#8226; Recent
+                    </MenuButton>
 
-                    <Button
+                    <MenuButton
                       fullWidth
-                      variant="tertiary"
-                      style={
-                        queryName === "featuredPublicAnimations"
-                          ? { background: "#F6F8F9" }
-                          : {}
-                      }
+                      active={queryName === "featuredPublicAnimations"}
                       onClick={() => {
                         setSearch("");
                         setQuery(FeaturedQuery);
                         setQueryName("featuredPublicAnimations");
                       }}
                     >
-                      <span
-                        style={
-                          queryName === "featuredPublicAnimations"
-                            ? { color: "#00C1A3" }
-                            : {}
-                        }
-                      >
-                        Featured
-                      </span>
-                    </Button>
+                      &#8226; Featured
+                    </MenuButton>
 
-                    <Button
-                      fullWidth
-                      variant="tertiary"
-                      style={
-                        queryName === "popularPublicAnimations"
-                          ? { background: "#F6F8F9" }
-                          : {}
-                      }
+                    <MenuButton
+                      active={queryName === "popularPublicAnimations"}
                       onClick={() => {
                         setSearch("");
                         setQuery(PopularQuery);
                         setQueryName("popularPublicAnimations");
                       }}
                     >
-                      <span
-                        style={
-                          queryName === "popularPublicAnimations"
-                            ? { color: "#00C1A3" }
-                            : {}
-                        }
-                      >
-                        Popular
-                      </span>
-                    </Button>
-                  </NavSections>
-                </MainNav>
+                      &#8226; Popular
+                    </MenuButton>
+                  </Box>
+                  <LottieUser />
+                </SubNav>
               </Box>
 
               <Box
@@ -324,21 +305,37 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
                     Loading content...
                   </Loader>
                 ) : (
-                  <Grid
-                    gap={2}
-                    data-testid="animation-grid"
-                    style={{ "grid-template-columns": "repeat(15, 1fr)" }}
-                  >
-                    {animations.map((animation: any) => {
-                      return (
-                        <LottieAnimation
-                          key={animation.node.id}
-                          animation={animation.node}
-                          setSelected={setSelected}
-                        />
-                      );
-                    })}
-                  </Grid>
+                  <>
+                    <Grid
+                      gap={2}
+                      data-testid="animation-grid"
+                      style={{ "grid-template-columns": "repeat(12, 1fr)" }}
+                    >
+                      {animations.map((animation: any) => {
+                        return (
+                          <LottieAnimation
+                            key={animation.node.id}
+                            animation={animation.node}
+                            setSelected={setSelected}
+                          />
+                        );
+                      })}
+                    </Grid>
+                    <LottiePagination prev={() => {
+                      setParams({
+                        after: "",
+                        before: pageInfo.startCursor,
+                        first: 0,
+                        last: 12,
+                      } as any);
+                    }} next={() => {
+                      setParams({
+                        after: pageInfo.endCursor,
+                        first: 12,
+                        before: "",
+                        last: 0,
+                      } as any);
+                    }} limit={12} total={totalCount} page={1} /></>
                 )}
               </Box>
             </Flex>
@@ -353,44 +350,16 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
                 >
                   Cancel
                 </Button>
-                <Button
-                  onClick={() => {
-                    handleSelect(selected);
-                  }}
-                >
-                  Finish
-                </Button>
               </>
             }
             endActions={
-              <>
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    setParams({
-                      after: "",
-                      before: pageInfo.startCursor,
-                      first: 0,
-                      last: 20,
-                    } as any);
-                  }}
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    setParams({
-                      after: pageInfo.endCursor,
-                      first: 20,
-                      before: "",
-                      last: 0,
-                    } as any);
-                  }}
-                >
-                  Next
-                </Button>
-              </>
+              <Button
+                onClick={() => {
+                  handleSelect(selected);
+                }}
+              >
+                Insert animation
+              </Button>
             }
           />
         </>
@@ -469,7 +438,7 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
                     setLoading(true);
                   }}
                   onSuccess={(data: any) => setAccessToken(data)}
-                  onError={() => {}}
+                  onError={() => { }}
                 />
 
                 <Typography

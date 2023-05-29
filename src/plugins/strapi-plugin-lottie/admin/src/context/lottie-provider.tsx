@@ -7,6 +7,7 @@ import { createClient, Provider as UrqlProvider } from "urql";
 
 import { api, localStore } from "../helpers/consts";
 import { LocalStorage } from "../utils/storage";
+import { Viewer } from "../utils/queries";
 
 interface ILottieProviderProps {
   children: React.ReactNode;
@@ -21,13 +22,19 @@ export interface IUserDataProps {
 }
 
 export interface IHNResponseProps {
-  userData?: IUserDataProps;
   accessToken: string;
 }
 
 export const LottieContext = createContext({
   appData: {
     accessToken: "",
+  },
+  userData: {
+    avatarUrl: 'string',
+    email: '',
+    id: 0,
+    name: '',
+    username: ''
   },
   setAppData: (_value: IHNResponseProps): void => {},
   fetchQuery: (query: any, params): void => {},
@@ -40,6 +47,13 @@ export const LottieProvider: React.FC<ILottieProviderProps> = ({
 }: ILottieProviderProps) => {
   const [appData, setAppData] = useState<IHNResponseProps>({
     accessToken: "",
+  });
+  const [userData, setUserData] = useState<IUserDataProps>({
+    avatarUrl: 'string',
+    email: '',
+    id: 0,
+    name: '',
+    username: ''
   });
   const [isAppLoading, setIsAppLoading] = useState<boolean>(
     false
@@ -55,29 +69,52 @@ export const LottieProvider: React.FC<ILottieProviderProps> = ({
           ...prev,
           accessToken,
         }));
+      } else {
+        const response: any = await fetchQuery(Viewer, {});
+        setUserData(response.data.viewer)
       }
+      
     };
     fetchStoreData();
   }, [appData]);
 
   const onLogout = () => {
+    const storage = new LocalStorage();
+    storage.setItem(localStore.lottieAccessToken, null);
     setAppData({
-      accessToken: "",
+      accessToken: null,
     });
   };
 
-  const client = createClient({
-    url: api.graphql,
-    fetchOptions: () => {
-      return {
-        headers: {
-          Authorization: appData?.accessToken
-            ? `Bearer ${appData?.accessToken}`
-            : "",
-        },
-      };
-    },
-  });
+  // const client = createClient({
+  //   url: api.graphql,
+  //   fetchOptions: () => {
+  //     return {
+  //       headers: {
+  //         Authorization: appData?.accessToken
+  //           ? `Bearer ${appData?.accessToken}`
+  //           : "",
+  //       },
+  //     };
+  //   },
+  // });
+
+  const client = React.useMemo(() => {
+    const urqlClient = createClient({
+      url: api.graphql,
+      fetchOptions: () => {
+        return {
+          headers: {
+            Authorization: appData?.accessToken
+              ? `Bearer ${appData?.accessToken}`
+              : "",
+          },
+        };
+      },
+    });
+
+    return urqlClient;
+  }, [appData]);
 
   const fetchQuery = async (query: any, params) => {
     try {
@@ -103,6 +140,7 @@ export const LottieProvider: React.FC<ILottieProviderProps> = ({
     <LottieContext.Provider
       value={{
         appData,
+        userData,
         setAppData,
         fetchQuery,
         fetchMutation,

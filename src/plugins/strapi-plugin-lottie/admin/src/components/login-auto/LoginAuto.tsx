@@ -11,7 +11,7 @@ import React from "react";
 import styled from "styled-components";
 import { LottieContext } from "../../context/lottie-provider";
 import { localStore } from "../../helpers/consts";
-import { CreateLoginToken, TokenLogin, Viewer } from "../../utils/queries";
+import { CreateLoginToken, TokenLogin } from "../../utils/queries";
 import { LocalStorage } from "../../utils/storage";
 
 const LoginButton = styled(Button)`
@@ -68,16 +68,6 @@ export const LoginAuto: React.FC<ILoginAutoProps> = ({
       let accessToken = response.data.tokenLogin.accessToken;
       setAppData(accessToken);
       instance.setItem(localStore.lottieAccessToken, accessToken);
-
-      const viewData = await fetchQuery(Viewer, {
-        fetchOptions: {
-          headers: {
-            authorization: accessToken ? `Bearer ${accessToken}` : "",
-            'client-name': packageJson.name,
-            'client-version': packageJson.version,
-          },
-        },
-      });
 
       onSuccess({
         accessToken,

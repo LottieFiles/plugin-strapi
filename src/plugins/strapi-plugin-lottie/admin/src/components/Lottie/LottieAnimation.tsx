@@ -20,7 +20,7 @@ const AnimationContainer = styled.div`
   display: flex;
   -webkit-box-pack: center;
   justify-content: center;
-  height: 10.25rem;
+  height: 6.25rem;
   width: 100%;
   z-index: 1;
 `;
