@@ -2,7 +2,7 @@
  * Copyright 2022 Design Barn Inc.
  */
 
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useMemo } from "react";
 import { createClient, Provider as UrqlProvider } from "urql";
 
 import { api, localStore } from "../helpers/consts";
@@ -59,6 +59,34 @@ export const LottieProvider: React.FC<ILottieProviderProps> = ({
     false
   );
 
+  const client = useMemo(() => {
+    const urqlClient = createClient({
+      url: api.graphql,
+      fetchOptions: () => {
+        return {
+          headers: {
+            Authorization: appData?.accessToken
+              ? `Bearer ${appData?.accessToken}`
+              : "",
+          },
+        };
+      },
+    });
+
+    const getUserData = async () => {
+      try {
+        const response: any = await urqlClient.query(Viewer, {}).toPromise();
+        setUserData(response.data.viewer)    
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    getUserData()
+
+    return urqlClient;
+  }, [appData]);
+
   useEffect(() => {
     const fetchStoreData = async () => {
       if(appData.accessToken === "") {
@@ -85,36 +113,6 @@ export const LottieProvider: React.FC<ILottieProviderProps> = ({
       accessToken: null,
     });
   };
-
-  // const client = createClient({
-  //   url: api.graphql,
-  //   fetchOptions: () => {
-  //     return {
-  //       headers: {
-  //         Authorization: appData?.accessToken
-  //           ? `Bearer ${appData?.accessToken}`
-  //           : "",
-  //       },
-  //     };
-  //   },
-  // });
-
-  const client = React.useMemo(() => {
-    const urqlClient = createClient({
-      url: api.graphql,
-      fetchOptions: () => {
-        return {
-          headers: {
-            Authorization: appData?.accessToken
-              ? `Bearer ${appData?.accessToken}`
-              : "",
-          },
-        };
-      },
-    });
-
-    return urqlClient;
-  }, [appData]);
 
   const fetchQuery = async (query: any, params) => {
     try {

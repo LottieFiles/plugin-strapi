@@ -78,7 +78,7 @@ const MenuButton = styled.button<{ active: boolean }>`
 
 const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
   const { formatMessage } = useIntl();
-  const [value, setValue] = useState("");
+  const [page, setPage] = useState(1);
   const [condensed, setCondensed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [animations, setAnimations] = useState([]);
@@ -130,6 +130,27 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
       fetchData();
     }
   }, [queryName, searchTerm, params, appData]);
+
+  const nextPage = () => {
+    setParams({
+      after: pageInfo.endCursor,
+      first: 12,
+      before: "",
+      last: 0,
+    } as any);
+    setPage(page + 1)
+  }
+
+  const prevPage = () => {
+    if (page === 1) return
+    setParams({
+      after: "",
+      before: pageInfo.startCursor,
+      first: 0,
+      last: 12,
+    } as any);
+    setPage(page - 1)
+  }
 
   return (
     <BigModal
@@ -321,21 +342,7 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
                         );
                       })}
                     </Grid>
-                    <LottiePagination prev={() => {
-                      setParams({
-                        after: "",
-                        before: pageInfo.startCursor,
-                        first: 0,
-                        last: 12,
-                      } as any);
-                    }} next={() => {
-                      setParams({
-                        after: pageInfo.endCursor,
-                        first: 12,
-                        before: "",
-                        last: 0,
-                      } as any);
-                    }} limit={12} total={totalCount} page={1} /></>
+                    <LottiePagination prev={prevPage} next={nextPage} limit={12} total={totalCount} page={page} /></>
                 )}
               </Box>
             </Flex>

@@ -12,9 +12,9 @@ const PaginationContainer = styled.div`
   padding: 1rem;
 `;
 
-const PageButton = styled.button`
+const PageButton = styled.button<{ active: boolean }>`
 background: #FFFFFF;
-box-shadow: 0px 1px 4px rgba(26, 26, 67, 0.1);
+box-shadow: ${props => props.active ? '0px 1px 4px rgba(26, 26, 67, 0.1)' : 'none'};
 border-radius: 4px;
 font-style: normal;
 font-weight: 700;
@@ -32,7 +32,8 @@ height: 32px;
 color: #271FE0;
 `;
 
-const LottiePagination = ({ disabled = false,
+const LottiePagination = ({
+    disabled = false,
     limit,
     next,
     page,
@@ -59,7 +60,7 @@ const LottiePagination = ({ disabled = false,
                         <path d="M6 8.825L2.2915 5L6 1.175L4.8583 0L0 5L4.8583 10L6 8.825Z" fill="#666687" />
                     </svg>
                 </PageButton>
-                <PageButton>
+                <PageButton active>
                     {currentPage}
                 </PageButton>
                 <PageButton onClick={next}>

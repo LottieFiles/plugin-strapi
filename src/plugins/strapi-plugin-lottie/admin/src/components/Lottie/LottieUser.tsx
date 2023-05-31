@@ -70,14 +70,14 @@ const LottieUser = () => {
           </Typography>
         </Box>
 
-        <Box style={{ display: 'flex', gap: "1rem" }}>
+        {/* <Box style={{ display: 'flex', gap: "1rem" }}>
           <Typography varian="pi" onClick={() => window.open("https://feedback.lottiefiles.com/web", "_blank")} style={{ color: "#808E9A", fontSize: '10px', cursor: 'pointer' }}>
             Feedback
           </Typography>
           <Typography varian="pi" onClick={() => window.open("https://feedback.lottiefiles.com/web", "_blank")} style={{ color: "#808E9A", fontSize: '10px', cursor: 'pointer' }}>
             Help Center
           </Typography>
-        </Box>
+        </Box> */}
       </Box>
     </LottieUserContainer>
   );

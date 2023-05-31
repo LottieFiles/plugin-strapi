@@ -66,7 +66,7 @@ export const LoginAuto: React.FC<ILoginAutoProps> = ({
     } else {
       setIsLoggingIn(false);
       let accessToken = response.data.tokenLogin.accessToken;
-      setAppData(accessToken);
+      setAppData({ accessToken });
       instance.setItem(localStore.lottieAccessToken, accessToken);
 
       onSuccess({
