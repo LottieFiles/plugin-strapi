@@ -34,12 +34,34 @@ const LottieInput = ({ attribute, name, onChange, value }) => {
     onChange({
       target: {
         name,
-        value: e ? JSON.stringify(e) : null,
+        value: null,
         type: attribute.type,
       },
     });
-    setIsVisible((prev) => !prev);
+
+    setTimeout(() => {
+      onChange({
+        target: {
+          name,
+          value: e ? JSON.stringify(e) : null,
+          type: attribute.type,
+        },
+      });
+      setIsVisible((prev) => !prev);
+    }, 100)
   };
+
+
+  const handleDelete = async (e) => {
+    onChange({
+      target: {
+        name,
+        value: null,
+        type: attribute.type,
+      },
+    });
+  };
+  
 
   return (
     <CarouselInput
@@ -62,7 +84,7 @@ const LottieInput = ({ attribute, name, onChange, value }) => {
               />
               <IconButton
                id="delete-animation-field"
-                onClick={() => handleSelect(null)}
+                onClick={handleDelete}
                 label="Delete"
                 icon={<Trash />}
               />
