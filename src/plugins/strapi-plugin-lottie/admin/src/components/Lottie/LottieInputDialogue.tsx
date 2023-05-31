@@ -334,9 +334,9 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
                 ) : (
                   <>
                     <Grid
-                      gap={2}
+                      gap={6}
                       data-testid="animation-grid"
-                      style={{ "grid-template-columns": "repeat(12, 1fr)" }}
+                      style={{ "grid-template-columns": "repeat(12, 1fr)", padding: '1.2rem' }}
                     >
                       {animations.map((animation: any) => {
                         return (

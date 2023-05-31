@@ -40,7 +40,6 @@ const LottieAnimation = ({ animation, setSelected }) => {
     <GridItem
       key={animation.id}
       background="neutral100"
-      padding={1}
       col={3}
       s={12}
     >
