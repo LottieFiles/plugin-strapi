@@ -20,7 +20,7 @@ const AnimationContainer = styled.div`
   display: flex;
   -webkit-box-pack: center;
   justify-content: center;
-  height: 10.25rem;
+  height: 6.25rem;
   width: 100%;
   z-index: 1;
 `;
@@ -40,7 +40,6 @@ const LottieAnimation = ({ animation, setSelected }) => {
     <GridItem
       key={animation.id}
       background="neutral100"
-      padding={1}
       col={3}
       s={12}
     >
