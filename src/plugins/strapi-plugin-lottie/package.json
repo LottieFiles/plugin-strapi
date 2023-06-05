@@ -1,6 +1,6 @@
 {
   "name": "strapi-plugin-lottie",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "LottieFiles Strapi plugin",
   "author": {
     "name": "Mushfau Saeed",

@@ -1,5 +1,11 @@
 # plugin-strapi
 
+## 0.0.4
+
+### Patch Changes
+
+- 827a3d7: Updated readme
+
 ## 0.0.3
 
 ### Patch Changes
