@@ -45,14 +45,14 @@ export default {
     /*******lottie start  ******/
     app.customFields.register({
       name: "lottie",
-      pluginId: "strapi-plugin-lottie", // the custom field is created by a color-picker plugin
+      pluginId: "strapi-plugin-lottie", // the custom field is created by a strapi-plugin-lottie plugin
       type: "json",
       intlLabel: {
-        id: "color-picker.color.label",
+        id: "strapi-plugin-lottie.color.label",
         defaultMessage: "Lottie",
       },
       intlDescription: {
-        id: "color-picker.color.description",
+        id: "strapi-plugin-lottie.color.description",
         defaultMessage: "Search and select a lottie",
       },
       components: {
