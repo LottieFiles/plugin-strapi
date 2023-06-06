@@ -424,7 +424,7 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
                     fontSize: "28px",
                     lineHeight: "130%",
                     textAlign: "center",
-                    color: "#20272C",
+                    color: isDarkMode ? "#F7F7F7" :"#20272C",
                     marginBottom: "1rem",
                   }}
                   variant="alpha"
