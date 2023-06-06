@@ -1,5 +1,11 @@
 # plugin-strapi
 
+## 0.0.5
+
+### Patch Changes
+
+- 4a0ab42: Update readme and translation file prefix key
+
 ## 0.0.4
 
 ### Patch Changes
