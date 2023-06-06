@@ -446,7 +446,7 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
                 </Typography>
 
                 <LoginAuto
-                  label="Log Auto in with your LottieFiles account"
+                  label="Login with your LottieFiles account"
                   onClick={() => {
                     setLoading(true);
                   }}
