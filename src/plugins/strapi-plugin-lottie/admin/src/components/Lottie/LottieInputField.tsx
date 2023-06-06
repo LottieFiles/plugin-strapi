@@ -48,9 +48,8 @@ const LottieInput = ({ attribute, name, onChange, value }) => {
         },
       });
       setIsVisible((prev) => !prev);
-    }, 100)
+    }, 100);
   };
-
 
   const handleDelete = async (e) => {
     onChange({
@@ -61,11 +60,10 @@ const LottieInput = ({ attribute, name, onChange, value }) => {
       },
     });
   };
-  
 
   return (
     <CarouselInput
-      label={formatMessage({ id: getTrad("color-picker.label") })}
+      label={formatMessage({ id: getTrad("strapi-plugin-lottie.label") })}
       data-testid="lottie-input"
       selectedSlide={0}
       previousLabel="Previous slide"
@@ -83,7 +81,7 @@ const LottieInput = ({ attribute, name, onChange, value }) => {
                 icon={<Pencil />}
               />
               <IconButton
-               id="delete-animation-field"
+                id="delete-animation-field"
                 onClick={handleDelete}
                 label="Delete"
                 icon={<Trash />}
