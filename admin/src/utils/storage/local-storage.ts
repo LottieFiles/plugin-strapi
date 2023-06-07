@@ -41,7 +41,7 @@ export class LocalStorage extends AbstractStorage {
     const restored = sessionStorage.getItem(localStore.firstExperienced);
 
     sessionStorage.clear();
-    sessionStorage.setItem(localStore.firstExperienced, restored);
+    sessionStorage.setItem(localStore.firstExperienced, restored as any);
   }
 
   /**
@@ -55,7 +55,7 @@ export class LocalStorage extends AbstractStorage {
    * Returns the items matching the given key pattern.
    */
   public async findItem(keyPattern: RegExp): Promise<any[]> {
-    const results = [];
+    const results:any = [];
 
     for (let i = 0; i < this.length; i++) {
       const key = sessionStorage.key(i);
