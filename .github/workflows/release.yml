@@ -10,9 +10,6 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./src/plugins/strapi-plugin-lottie
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
