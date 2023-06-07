@@ -60,6 +60,36 @@ export default {
 }
 ```
 
+Also, configure the `strapi::security` middleware by adding the directives below to allow the plugin to load required assets.
+
+```
+./config/middleware.ts
+
+export default [
+  // ...
+  {
+      name: "strapi::security",
+      config: {
+        contentSecurityPolicy: {
+          useDefaults: true,
+          directives: {
+            "connect-src": ["'self'", "https:"],
+            "img-src": [
+              "'self'",
+              "data:",
+              "blob:",
+              "market-assets.strapi.io",
+              "*.lottiefiles.com",
+            ],
+            upgradeInsecureRequests: null,
+          },
+        },
+      }
+  },
+  // ...
+];
+```
+
 ---
 
 ## 👨‍💻 `usage`
