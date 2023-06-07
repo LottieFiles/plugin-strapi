@@ -1,5 +1,13 @@
 # plugin-strapi
 
+## 0.0.6
+
+### Patch Changes
+
+- 4ed23a1: Remove avatar (profile picture) from animation card
+- e776833: Set viewer if available
+- 4d9a5d0: Add plugin setup instructions to README.md - `strapi::security` middleware configuration to allow loading of required assets
+
 ## 0.0.5
 
 ### Patch Changes
