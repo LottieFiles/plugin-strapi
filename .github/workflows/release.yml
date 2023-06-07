@@ -32,7 +32,6 @@ jobs:
         with:
           commit: "chore: bump version"
           publish: yarn release
-          cwd: ./src/plugins/strapi-plugin-lottie
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPMJS_TOKEN }}
