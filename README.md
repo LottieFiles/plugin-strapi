@@ -1,10 +1,40 @@
-# 🚀 Getting started with Strapi
+# LottieFiles plugin for Strapi
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/developer-docs/latest/developer-resources/cli/CLI.html) (CLI) which lets you scaffold and manage your project in seconds.
+A plugin for [Strapi CMS](https://strapi.io), that allows creating a custom input field for adding lottie animations seamlessly via [LottieFiles](https://lottiefiles.com/recent) public animation repository.
 
-### `develop`
+## Table of contents
 
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/developer-docs/latest/developer-resources/cli/CLI.html#strapi-develop)
+- ✨ [Features](##-features)
+- ⏳ [Installation](##-installation)
+- 🔧 [Configuration](##-configuration)
+- 👨‍💻 [Usage](##-usage)
+- 🕸️ [API](##-api)
+
+---
+
+## ✨ `features`
+
+- Custom field creation in Strapi models
+- Browse LottieFiles public animation repository based on:
+  - [Recent animations](https://lottiefiles.com/recent)
+  - [Popular animations](https://lottiefiles.com/popular)
+  - [Featured animations](https://lottiefiles.com/featured)
+- Keywork based search
+- Animation metadata, with creator info
+
+---
+
+## ⏳ `installation`
+
+At the root of your Strapi project, run the following commands to add the plugin
+
+```
+npm install strapi-plugin-lottie
+# or
+yarn add strapi-plugin-lottie
+```
+
+Start your Strapi application with in development mode
 
 ```
 npm run develop
@@ -12,46 +42,82 @@ npm run develop
 yarn develop
 ```
 
-### `start`
+---
 
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/developer-docs/latest/developer-resources/cli/CLI.html#strapi-start)
+## 🔧 `Configuration`
 
-```
-npm run start
-# or
-yarn start
-```
-
-### `build`
-
-Build your admin panel. [Learn more](https://docs.strapi.io/developer-docs/latest/developer-resources/cli/CLI.html#strapi-build)
+To start using the plugin, enable the plugin in strapi configuration.
 
 ```
-npm run build
-# or
-yarn build
+./config/plugins.ts
+
+export default {
+    // ...
+    "strapi-plugin-lottie": {
+        enabled: true
+    },
+    // ...
+}
 ```
 
-## ⚙️ Deployment
+Also, configure the `strapi::security` middleware by adding the directives below to allow the plugin to load required assets.
 
-Strapi gives you many possible deployment options for your project. Find the one that suits you on the [deployment section of the documentation](https://docs.strapi.io/developer-docs/latest/setup-deployment-guides/deployment.html).
+```
+./config/middleware.ts
 
-## 📚 Learn more
-
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://docs.strapi.io) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
-
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
-
-## ✨ Community
-
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
+export default [
+  // ...
+  {
+      name: "strapi::security",
+      config: {
+        contentSecurityPolicy: {
+          useDefaults: true,
+          directives: {
+            "connect-src": ["'self'", "https:"],
+            "img-src": [
+              "'self'",
+              "data:",
+              "blob:",
+              "market-assets.strapi.io",
+              "*.lottiefiles.com",
+            ],
+            upgradeInsecureRequests: null,
+          },
+        },
+      }
+  },
+  // ...
+];
+```
 
 ---
 
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+## 👨‍💻 `usage`
+
+- Goto `Content-Type Builder` and create a new collection type. In the field selection dialogue, navigate to `custom` tab. Select `Lottie` field
+- Give the new field a name and confirm. The new field should be visible in the collection's field list, with type: `Custom field`
+- Goto `Content Manager`, select the collection type that was created. Click the `Create new entry`
+- Click the `Lottie Field`, to open the animation browser modal.
+- Once selected, the animation preview can be seen in the Lottie field as well as collection list view after saving the entry
+
+---
+
+## 🕸️ `api`
+
+Lottie field data can be consumed via both RESP and GraphQL APIs provided by Strapi CMS.
+
+In both apis, the returned field data has the following structure
+
+```
+{
+    "bgColor": "#fff",
+    "gifUrl": "https://assets1.lottiefiles.com/render/lhu59gtz.gif",
+    "imageUrl": "https://assets3.lottiefiles.com/render/lhu59gtz.png",
+    "lottieUrl": "https://assets9.lottiefiles.com/dotlotties/dlf10_rrHcSPZWAB.lottie",
+    "name": "Wave Form",
+    "createdBy": {
+      "avatarUrl": "https://lh3.googleusercontent.com/a/AGNmyxburVBP66UgfPD1D-I7l1wIwJmc1vVKOiGHXfrM=s96-c",
+      "firstName": "Juan"
+    }
+  }
+```

@@ -30,11 +30,11 @@ export const LottieContext = createContext({
     accessToken: "",
   },
   userData: {
-    avatarUrl: 'string',
-    email: '',
+    avatarUrl: "string",
+    email: "",
     id: 0,
-    name: '',
-    username: ''
+    name: "",
+    username: "",
   },
   setAppData: (_value: IHNResponseProps): void => {},
   fetchQuery: (query: any, params): void => {},
@@ -49,15 +49,13 @@ export const LottieProvider: React.FC<ILottieProviderProps> = ({
     accessToken: "",
   });
   const [userData, setUserData] = useState<IUserDataProps>({
-    avatarUrl: 'string',
-    email: '',
+    avatarUrl: "string",
+    email: "",
     id: 0,
-    name: '',
-    username: ''
+    name: "",
+    username: "",
   });
-  const [isAppLoading, setIsAppLoading] = useState<boolean>(
-    false
-  );
+  const [isAppLoading, setIsAppLoading] = useState<boolean>(false);
 
   const client = useMemo(() => {
     const urqlClient = createClient({
@@ -76,22 +74,25 @@ export const LottieProvider: React.FC<ILottieProviderProps> = ({
     const getUserData = async () => {
       try {
         const response: any = await urqlClient.query(Viewer, {}).toPromise();
-        setUserData(response.data.viewer)    
-      } catch (err) {
-        console.error(err)
-      }
-    }
 
-    getUserData()
+        if (response.data && response.data.viewer) {
+          setUserData(response.data.viewer);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    getUserData();
 
     return urqlClient;
   }, [appData]);
 
   useEffect(() => {
     const fetchStoreData = async () => {
-      if(appData.accessToken === "") {
-      const storage = new LocalStorage();
-      const accessToken = await storage.getItem(localStore.lottieAccessToken);
+      if (appData.accessToken === "") {
+        const storage = new LocalStorage();
+        const accessToken = await storage.getItem(localStore.lottieAccessToken);
 
         setAppData((prev) => ({
           ...prev,
@@ -99,9 +100,11 @@ export const LottieProvider: React.FC<ILottieProviderProps> = ({
         }));
       } else {
         const response: any = await fetchQuery(Viewer, {});
-        setUserData(response.data.viewer)
+
+        if (response.data && response.data.viewer) {
+          setUserData(response.data.viewer);
+        }
       }
-      
     };
     fetchStoreData();
   }, [appData]);
@@ -110,7 +113,7 @@ export const LottieProvider: React.FC<ILottieProviderProps> = ({
     const storage = new LocalStorage();
     storage.setItem(localStore.lottieAccessToken, null);
     setAppData({
-      accessToken: null,
+      accessToken: "",
     });
   };
 
@@ -124,7 +127,7 @@ export const LottieProvider: React.FC<ILottieProviderProps> = ({
     }
   };
 
-  const fetchMutation = async (query: any, params) : Promise<any>=> {
+  const fetchMutation = async (query: any, params): Promise<any> => {
     try {
       const data = await client.mutation(query, params).toPromise();
 
@@ -133,7 +136,7 @@ export const LottieProvider: React.FC<ILottieProviderProps> = ({
       return null;
     }
   };
-  
+
   return (
     <LottieContext.Provider
       value={{
