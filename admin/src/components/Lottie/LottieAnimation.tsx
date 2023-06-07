@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 
-// @ts-ignore
 import {
-  Avatar,
   Card,
   CardBody,
   CardCheckbox,
   CardContent,
   CardHeader,
-  Flex,
   GridItem,
   Typography,
 } from "@strapi/design-system";
@@ -37,12 +34,7 @@ const LottieAnimation = ({ animation, setSelected }) => {
   };
 
   return (
-    <GridItem
-      key={animation.id}
-      background="neutral100"
-      col={3}
-      s={12}
-    >
+    <GridItem key={animation.id} background="neutral100" col={3} s={12}>
       <Card>
         <CardHeader>
           <AnimationCheckbox>
@@ -74,16 +66,9 @@ const LottieAnimation = ({ animation, setSelected }) => {
         <CardBody>
           <CardContent>
             {animation?.createdBy && (
-              <Flex justifyContent="space-between">
-                <Avatar
-                  src={animation.createdBy.avatarUrl ?? ""}
-                  alt={animation.createdBy.firstName ?? ""}
-                  preview
-                />
-                <Typography style={{ marginLeft: "5px" }} variant="pi">
-                  {animation.createdBy.firstName ?? ""}
-                </Typography>
-              </Flex>
+              <Typography variant="pi">
+                {animation.createdBy.firstName ?? ""}
+              </Typography>
             )}
           </CardContent>
         </CardBody>
