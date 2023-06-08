@@ -19,7 +19,7 @@ A plugin for [Strapi CMS](https://strapi.io), that allows creating a custom inpu
   - [Recent animations](https://lottiefiles.com/recent)
   - [Popular animations](https://lottiefiles.com/popular)
   - [Featured animations](https://lottiefiles.com/featured)
-- Keywork based search
+- Keyword based search
 - Animation metadata, with creator info
 
 ---
@@ -44,7 +44,7 @@ yarn develop
 
 ---
 
-## 🔧 `Configuration`
+## 🔧 `configuration`
 
 To start using the plugin, enable the plugin in strapi configuration.
 
@@ -104,7 +104,7 @@ export default [
 
 ## 🕸️ `api`
 
-Lottie field data can be consumed via both RESP and GraphQL APIs provided by Strapi CMS.
+Lottie field data can be consumed via both REST and GraphQL APIs provided by Strapi CMS.
 
 In both apis, the returned field data has the following structure
 
