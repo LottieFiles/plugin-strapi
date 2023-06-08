@@ -1,5 +1,11 @@
 # plugin-strapi
 
+## 0.1.0
+
+### Minor Changes
+
+- 97c0002: update readme
+
 ## 0.0.6
 
 ### Patch Changes
