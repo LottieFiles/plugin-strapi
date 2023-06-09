@@ -1,5 +1,11 @@
 # plugin-strapi
 
+## 0.1.1
+
+### Patch Changes
+
+- efa2384: Include dist when publishing
+
 ## 0.1.0
 
 ### Minor Changes
