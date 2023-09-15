@@ -13,7 +13,10 @@
     "displayName": "LottieFiles plugin for Strapi"
   },
   "files": [
-    "dist"
+    "dist",
+    "admin",
+    "strapi-admin.js",
+    "strapi-server.js"
   ],
   "dependencies": {
     "@dotlottie/player-component": "1.3.2",
