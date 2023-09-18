@@ -12,7 +12,7 @@ const PaginationContainer = styled.div`
   padding: 1rem;
 `;
 
-const PageButton = styled.button<{ active: boolean }>`
+const PageButton = styled.button<{ active?: boolean }>`
 background: #FFFFFF;
 box-shadow: ${props => props.active ? '0px 1px 4px rgba(26, 26, 67, 0.1)' : 'none'};
 border-radius: 4px;

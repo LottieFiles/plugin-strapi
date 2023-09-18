@@ -66,7 +66,7 @@ const LoginButton = styled(Button)`
   }
 `;
 
-const MenuButton = styled.button<{ active: boolean }>`
+const MenuButton = styled.button<{ active?: boolean }>`
   background-color: ${props => props.active ? '#F0F0FF' : 'transparent'};
   color: ${props => props.active ? '#271FE0' : '#32324D'};
   width: 100%;
@@ -283,7 +283,6 @@ const LottieInputDialogue = ({ setIsVisible, handleSelect }) => {
                   </Box>
                   <Box style={{ marginTop: '1rem' }}>
                     <MenuButton
-                      fullWidth
                       active={queryName === "featuredPublicAnimations"}
                       onClick={() => {
                         setSearch("");
