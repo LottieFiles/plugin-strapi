@@ -1,5 +1,11 @@
 # plugin-strapi
 
+## 0.2.0
+
+### Minor Changes
+
+- bd49155: fix for Strapi not working for some users
+
 ## 0.1.1
 
 ### Patch Changes
