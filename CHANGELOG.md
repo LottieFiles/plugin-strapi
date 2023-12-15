@@ -1,5 +1,11 @@
 # plugin-strapi
 
+## 0.2.2
+
+### Patch Changes
+
+- d372f3e: fixes Docker issue due to LottieLoading component importation (camel case sensitive)
+
 ## 0.2.1
 
 ### Patch Changes
