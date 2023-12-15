@@ -1,5 +1,11 @@
 # plugin-strapi
 
+## 0.2.1
+
+### Patch Changes
+
+- 0551ffa: Remove unnecessary env vars that cause infinite loading
+
 ## 0.2.0
 
 ### Minor Changes
