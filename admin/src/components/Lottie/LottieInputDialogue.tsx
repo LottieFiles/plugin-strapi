@@ -38,7 +38,7 @@ import {
   SearchQuery,
 } from "../../utils/queries";
 import Banner from "../Banner";
-import LottieLoading from "../Lottie-loading.json";
+import LottieLoading from "../LottieLoading.json";
 import { LoginAuto } from "../login-auto/LoginAuto";
 
 const BigModal = styled(ModalLayout)`
